@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { withBase } from "@/lib/paths";
 
 export default function NotFound() {
   return (
@@ -12,7 +13,7 @@ export default function NotFound() {
           آدرسی که دنبالش بودید وجود ندارد یا جابه‌جا شده.
         </p>
         <Link
-          href="/"
+          href={withBase("/")}
           className="btn-gold mt-8 inline-flex rounded-full px-7 py-3 text-[14px]"
         >
           بازگشت به خانه

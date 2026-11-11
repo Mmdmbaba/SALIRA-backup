@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
-import { cookies } from "next/headers";
 import { Vazirmatn, Marcellus, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
@@ -98,20 +97,23 @@ export const viewport: Viewport = {
 };
 
 /**
- * Theme is rendered server-side from the salira-theme cookie so hydration
- * never mismatches. No inline script mutates <html> before paint.
+ * Static-render friendly: the server always emits the dark class; a tiny
+ * head script syncs the saved theme from localStorage before first paint,
+ * so there is no flash and no hydration mismatch (suppressHydrationWarning).
+ * Works identically in standalone and static-export builds.
  */
-export default async function RootLayout({
+const THEME_BOOT = `try{var t=localStorage.getItem("salira-theme");if(t!=="light"&&t!=="dark")t="dark";var el=document.documentElement;el.classList.remove("light","dark");el.classList.add(t);}catch(e){}`;
+
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const theme =
-    (await cookies()).get("salira-theme")?.value === "light" ? "light" : "dark";
-
   return (
-    <html lang="fa" dir="rtl" className={theme} suppressHydrationWarning>
-      <head />
+    <html lang="fa" dir="rtl" className="dark" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_BOOT }} />
+      </head>
       <body
         className={`${vazirmatn.variable} ${harmattan.variable} ${marcellus.variable} ${jetbrains.variable} antialiased bg-background text-foreground grain`}
       >

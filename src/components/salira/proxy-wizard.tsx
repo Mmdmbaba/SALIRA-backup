@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
+import { withBase } from "@/lib/paths";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Send,
@@ -109,7 +110,7 @@ export function ProxyWizard() {
         await sleep(700);
         return { ok: true };
       }
-      const res = await fetch("/api/proxy/kata", {
+      const res = await fetch(withBase("/api/proxy/kata"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
@@ -388,10 +389,10 @@ export function ProxyWizard() {
                 <h3 className="text-[14px] font-bold text-ink">{tr.px_guide_title}</h3>
                 <div className="mt-4 grid gap-3 sm:grid-cols-2">
                   {[
-                    { t: tr.px_g1_t, d: tr.px_g1_d, img: "/guide/research_katabump_register.png" },
+                    { t: tr.px_g1_t, d: tr.px_g1_d, img: withBase("/guide/research_katabump_register.png") },
                     { t: tr.px_g2_t, d: tr.px_g2_d, img: null },
                     { t: tr.px_g3_t, d: tr.px_g3_d, img: null },
-                    { t: tr.px_g4_t, d: tr.px_g4_d, img: "/guide/files_page.png" },
+                    { t: tr.px_g4_t, d: tr.px_g4_d, img: withBase("/guide/files_page.png") },
                   ].map((g, i) => (
                     <div key={i} className="overflow-hidden rounded-2xl border border-line-soft">
                       {g.img ? (

@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { withBase } from "@/lib/paths";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Shuffle,
@@ -80,6 +81,9 @@ type EndpointMode = "auto" | "list" | "scan" | "manual";
 type DnsPreset = "cf" | "google" | "adguard" | "none" | "custom";
 type AllowedPreset = "all" | "v4" | "v6" | "custom";
 type ErrorCode = "rate_limited" | "network" | "timeout" | "upstream" | "bad_key" | null;
+
+/** Static-export builds (GitHub Pages) have no server: skip server-only calls. */
+const STATIC_DEMO = process.env.NEXT_PUBLIC_STATIC_DEMO === "1";
 
 const JUNK_FIELDS: FieldKey[] = ["jc", "jmin", "jmax", "s1", "s2", "h1", "h2", "h3", "h4"];
 const I_FIELDS = ["i1", "i2", "i3", "i4", "i5"] as const;
@@ -411,6 +415,7 @@ export function AwgGenerator() {
 
   /* ----------------------------- actions ----------------------------- */
   const fetchDevice = async (attempt = 0): Promise<WarpDevice> => {
+    if (STATIC_DEMO) throw { code: "network" } as { code: ErrorCode };
     let kp: { privateKey: string; publicKey: string } | null = null;
     try {
       kp = generateClientKeyPair();
@@ -419,7 +424,7 @@ export function AwgGenerator() {
     }
 
     const doFetch = () =>
-      fetch("/api/warp", {
+      fetch(withBase("/api/warp"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

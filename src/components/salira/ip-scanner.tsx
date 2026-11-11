@@ -1,6 +1,11 @@
 "use client";
 
 import { useCallback, useMemo, useRef, useState } from "react";
+import { withBase } from "@/lib/paths";
+
+/** Static-export builds (GitHub Pages) have no server: skip server-only calls. */
+const STATIC_DEMO = process.env.NEXT_PUBLIC_STATIC_DEMO === "1";
+
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ShieldOff,
@@ -379,6 +384,24 @@ export function IpScanner() {
         return;
       }
 
+      if (STATIC_DEMO) {
+        /* static build: no server handshake — local results are final */
+        const bridge: ScannerEndpoint[] = [];
+        for (const e of entries) {
+          const l = localMap.get(e.ip);
+          if (!l || l.avg === null) continue;
+          bridge.push({
+            endpoint: `${e.ip}:${e.port}`,
+            localMs: l.avg,
+            serverMs: null,
+            score: -l.avg / 4,
+            at: Date.now(),
+          });
+        }
+        pushResults(bridge);
+        setPhase("done");
+        return;
+      }
       setPhase("server");
       setRows((prev) =>
         prev.map((r) =>
@@ -389,7 +412,7 @@ export function IpScanner() {
       );
 
       try {
-        const res = await fetch("/api/scan", {
+        const res = await fetch(withBase("/api/scan"), {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({

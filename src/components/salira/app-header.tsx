@@ -2,6 +2,7 @@
 
 import { Sun, Moon, Send } from "lucide-react";
 import { motion } from "framer-motion";
+import { withBase } from "@/lib/paths";
 import { useLang } from "@/lib/lang-store";
 import { useAppView } from "@/lib/view-store";
 import { t } from "@/lib/i18n";
@@ -38,7 +39,7 @@ export function AppHeader() {
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={theme === "dark" ? "/logo-mark-dark.svg" : "/logo-mark.svg"}
+              src={withBase(theme === "dark" ? "/logo-mark-dark.svg" : "/logo-mark.svg")}
               alt=""
               aria-hidden
               width={21}

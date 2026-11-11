@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Sun, Moon } from "lucide-react";
+import { withBase } from "@/lib/paths";
 import { useLang } from "@/lib/lang-store";
 import { t } from "@/lib/i18n";
 import { MagneticLink } from "./magnetic";
@@ -89,7 +90,7 @@ export function Navbar() {
         <a href="#top" className="group flex items-center gap-2.5" aria-label="SALIRA home">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={theme === "dark" ? "/logo-mark-dark.svg" : "/logo-mark.svg"}
+            src={withBase(theme === "dark" ? "/logo-mark-dark.svg" : "/logo-mark.svg")}
             alt=""
             aria-hidden
             width={27}

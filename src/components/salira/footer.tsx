@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { withBase } from "@/lib/paths";
 import { useLang } from "@/lib/lang-store";
 import { t } from "@/lib/i18n";
 import { Reveal } from "./background-fx";
@@ -58,7 +59,7 @@ export function Footer() {
               <div className="flex items-center gap-2.5">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={theme === "dark" ? "/logo-mark-dark.svg" : "/logo-mark.svg"}
+                  src={withBase(theme === "dark" ? "/logo-mark-dark.svg" : "/logo-mark.svg")}
                   alt=""
                   aria-hidden
                   width={30}

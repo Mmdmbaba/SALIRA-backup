@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { withBase } from "@/lib/paths";
 import { motion } from "framer-motion";
 import {
   KeyRound,
@@ -79,7 +80,7 @@ export function HomeView() {
   const fetchStats = useCallback(async (force = false) => {
     setChecking(true);
     try {
-      const res = await fetch(force ? "/api/stats?refresh=1" : "/api/stats", { cache: "no-store" });
+      const res = await fetch(force ? withBase("/api/stats?refresh=1") : withBase("/api/stats"), { cache: "no-store" });
       const data = (await res.json()) as StatsData;
       if (data.ok) setStats(data);
     } catch {
