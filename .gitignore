@@ -1,8 +1,11 @@
 # --- اطلاعات حساس: هرگز commit نشود ---
 .credentials/
 *.token
-*.pem
 *.key
+*.pem
+.env
+.env.*
+!.env.example
 
 # --- ورودی‌های کاربر (حجیم/خصوصی) ---
 upload/
@@ -10,14 +13,28 @@ upload/
 # --- اسکیل‌ها و ابزارهای محیطی sandbox ---
 skills/
 node_modules/
+/.pnp
+.pnp.*
+.yarn/*
+/coverage
+.claude
+.z-ai-config
+
+# --- Next.js ---
+/.next/
+/out/
+/build
+.vercel
+*.tsbuildinfo
+next-env.d.ts
 
 # --- کش‌ها و خروجی‌های موقت ---
 __pycache__/
 *.pyc
 *.pyo
-.next/
 .venv/
 venv/
 *.log
 .DS_Store
 Thumbs.db
+local-*
