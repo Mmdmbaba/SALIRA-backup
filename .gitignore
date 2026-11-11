@@ -1,2 +1,23 @@
+# --- اطلاعات حساس: هرگز commit نشود ---
+.credentials/
+*.token
+*.pem
+*.key
+
+# --- ورودی‌های کاربر (حجیم/خصوصی) ---
+upload/
+
+# --- اسکیل‌ها و ابزارهای محیطی sandbox ---
 skills/
 node_modules/
+
+# --- کش‌ها و خروجی‌های موقت ---
+__pycache__/
+*.pyc
+*.pyo
+.next/
+.venv/
+venv/
+*.log
+.DS_Store
+Thumbs.db
