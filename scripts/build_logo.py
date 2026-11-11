@@ -1,276 +1,148 @@
 #!/usr/bin/env python3
-"""Vectorize the approved SALIRA logo artwork (user-provided AI render).
-
-Geometry (clean C3 interpretation of the artwork):
-  - Core: rounded triangular BAND, purple fill, navy stroke, negative hole.
-  - Halo: 3 stroke-only rounded triangles rotated 120 deg apart (pinwheel).
-  - Wordmark: SALIRA, Space Grotesk 700, converted to SVG paths (no fonts).
-
-Outputs:
-  public/logo.svg            master lockup  (light backgrounds: navy strokes)
-  public/logo-dark.svg       lockup for dark surfaces (light strokes)
-  public/logo-mark.svg       mark only, light-bg palette
-  public/logo-mark-dark.svg  mark only, dark-bg palette
-  src/app/icon.svg           favicon: mark on obsidian rounded tile
-  brand/logo-master.svg      repo copy of master lockup
-  brand/logo-mono-white.svg  mono white lockup
-  brand/logo-mono-navy.svg   mono navy lockup
+"""Build SALIRA vector assets from the reference logo bitmap.
+Mark  = geometric reconstruction (crisp polylines)
+Text  = traced from 10x upscaled bitmap (faithful letterforms)
+Outputs: logo.svg, logo-dark.svg, logo-mark.svg, logo-mark-dark.svg, icon.svg, og-image.png
 """
-import math
+from PIL import Image
+import numpy as np
+import cv2
 import os
 
-from fontTools.misc.transform import Transform
-from fontTools.pens.svgPathPen import SVGPathPen
-from fontTools.pens.transformPen import TransformPen
-from fontTools.ttLib import TTFont
+SRC = '/home/z/my-project/upload/pasted_image_1794422333674.png'
+OUT = '/home/z/my-project/public'
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+INK = '#3B3A38'        # soft black from reference
+CREAM = '#FFF8EE'      # card background from reference
+CREAM_DARK = '#F6E9D8' # slightly deeper cream for dark-theme logo strokes? keep simple: cream
+WHITE_INK = '#FFF6E8'  # strokes on dark backgrounds
 
-# ── palette (sampled from approved artwork + brand doc) ─────────────────
-PURPLE = "#8B54FF"   # core fill (artwork sample)
-NAVY   = "#273842"   # strokes on light (artwork sample)
-INK    = "#0D1420"   # wordmark on light (near-black navy)
-LIGHT  = "#E9EDFB"   # strokes on dark
-LIGHTW = "#F2F4FF"   # wordmark on dark
-OBSID  = "#0D1126"   # favicon tile
+# ---------------------------------------------------------------- mark model
+PATH_A = [(147,132),(139,152),(182,153),(193,124),(159,109),(172,76),(233,76),(226,99)]
+PATH_B = [(188,80),(180,104),(214,118),(201,152),(191,153),(204,122),(168,105),(181,76)]
+MARK_BBOX = (139, 76, 234, 153)   # x1,y1,x2,y2
 
-# ── mark geometry constants (viewBox space; measured from artwork) ──────
-CX, CY = 60.0, 60.0          # halo orbit center
-CORE_DY = 17.0               # core sits BELOW the halo center (artwork trick:
-                             # crossing lines hide behind the band, hole stays clean)
-CORE_R   = 38.9              # core outer circumradius (artwork: 53% width)
-CORE_HR  = 15.8              # core hole circumradius
-CORE_CR  = 8.0               # core outer corner radius
-CORE_HCR = 3.0               # hole corner radius
-HALO_R      = 39.1           # halo triangle circumradius
-HALO_CR     = 3.5            # halo corner radius (sharp, like artwork)
-HALO_TWIST  = 8.0            # pinwheel twist (deg, clockwise)
-HALO_LIFT   = 19.7           # orbit radius: halo center offset from mark center
-WORD_W      = 118.0          # wordmark target width
-WORD_TRACK_EM = 0.02         # tracking between letters (tight, like artwork)
-WORD_FATTEN = 0.8            # same-color stroke that fattens the wordmark
-WORD_GAP = 15.0              # gap mark→wordmark
+def mark_paths(stroke, sw=2.0, tx=0.0, ty=0.0, s=1.0):
+    """Return <path> elements for the S mark polylines."""
+    out = []
+    for pts in (PATH_A, PATH_B):
+        d = 'M ' + ' L '.join(f'{(x+tx)*s:.2f} {(y+ty)*s:.2f}' for x, y in pts)
+        out.append(f'<path d="{d}" fill="none" stroke="{stroke}" stroke-width="{sw*s:.2f}" stroke-linejoin="miter"/>')
+    return '\n  '.join(out)
 
-# stroke weight profiles (display vs favicon)
-STROKES_DISPLAY = {"core": 1.8, "halo": 1.3}
-STROKES_ICON    = {"core": 3.2, "halo": 2.2}
+# ---------------------------------------------------------------- text trace
+def trace_region(x1, y1, x2, y2, thresh=150, upscale=10, eps=1.1):
+    """Trace dark pixels in region -> SVG path 'd' strings (evenodd subpaths)."""
+    img = Image.open(SRC).convert('L')
+    crop = img.crop((x1, y1, x2, y2))
+    big = crop.resize((crop.width*upscale, crop.height*upscale), Image.LANCZOS)
+    a = np.array(big)
+    mask = (a < thresh).astype(np.uint8)*255
+    mask = cv2.GaussianBlur(mask, (5,5), 0)
+    _, mask = cv2.threshold(mask, 127, 255, cv2.THRESH_BINARY)
+    contours, hierarchy = cv2.findContours(mask, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
+    subs = []
+    for c in contours:
+        if cv2.contourArea(c) < 40:   # kill noise
+            continue
+        ap = cv2.approxPolyDP(c, eps, True)
+        pts = ap[:,0,:].astype(float)
+        pts = (pts / upscale)          # back to region coords
+        d = 'M ' + ' L '.join(f'{p[0]:.2f} {p[1]:.2f}' for p in pts) + ' Z'
+        subs.append(d)
+    return subs
 
+# Trace both text lines (full text block)
+TEXT_BBOX = (116, 168, 256, 214)
+text_subs = trace_region(*TEXT_BBOX)
+print(f'traced {len(text_subs)} text contours')
 
-def tri_pts(cx, cy, r, rot_deg=0.0):
-    """Equilateral triangle vertices, apex up, SVG coords (y down)."""
-    pts = []
-    for a in (-90.0 + rot_deg, 30.0 + rot_deg, 150.0 + rot_deg):
-        rad = math.radians(a)
-        pts.append((cx + r * math.cos(rad), cy + r * math.sin(rad)))
-    return pts
+def text_paths(stroke, tx, ty, s=1.0):
+    """Place traced text at offset (tx,ty) with scale s, as filled subpaths.
+    tx/ty = position of the TEXT_BBOX origin inside the target viewBox."""
+    # single <path> with all subpaths, evenodd for holes
+    d = ' '.join(text_subs)
+    return (f'<path transform="translate({tx:.2f} {ty:.2f}) scale({s:.4f})" '
+            f'd="{d}" fill="{stroke}" fill-rule="evenodd"/>')
 
+# ---------------------------------------------------------------- geometry
+def fit(x1,y1,x2,y2,pad):
+    return (x1-pad, y1-pad, x2+pad, y2+pad)
 
-def rounded_poly(pts, r):
-    """Closed path with circular corner arcs. Assumes convex polygon."""
-    n = len(pts)
-    d = []
-    segs = []
-    for i in range(n):
-        p_prev = pts[(i - 1) % n]
-        p = pts[i]
-        p_next = pts[(i + 1) % n]
-        v1 = (p_prev[0] - p[0], p_prev[1] - p[1])
-        v2 = (p_next[0] - p[0], p_next[1] - p[1])
-        l1 = math.hypot(*v1)
-        l2 = math.hypot(*v2)
-        u1 = (v1[0] / l1, v1[1] / l1)
-        u2 = (v2[0] / l2, v2[1] / l2)
-        # interior angle between edges
-        dot = max(-1.0, min(1.0, u1[0] * u2[0] + u1[1] * u2[1]))
-        theta = math.acos(dot)
-        t = r / math.tan(theta / 2.0)
-        t = min(t, l1 * 0.49, l2 * 0.49)
-        start = (p[0] + u1[0] * t, p[1] + u1[1] * t)
-        end = (p[0] + u2[0] * t, p[1] + u2[1] * t)
-        segs.append((start, p, end))
-        # sweep: cross of u1->u2 (y-down coords): negative cross = convex
-        # corner for a clockwise-walked polygon → arc bulges outward with 1
-        cross = u1[0] * u2[1] - u1[1] * u2[0]
-        segs[-1] = (start, p, end, 1 if cross < 0 else 0)
-    (s0, _, _, _) = segs[0]
-    d.append(f"M{s0[0]:.3f} {s0[1]:.3f}")
-    for i, (start, p, end, sweep) in enumerate(segs):
-        nxt = segs[(i + 1) % n][0]
-        d.append(f"L{start[0]:.3f} {start[1]:.3f}" if i > 0 else "")
-        d.append(f"A{r:.3f} {r:.3f} 0 0 {sweep} {end[0]:.3f} {end[1]:.3f}")
-        d.append(f"L{nxt[0]:.3f} {nxt[1]:.3f}" if i + 1 < n else "")
-    d.append("Z")
-    return " ".join(x for x in d if x)
+# mark-only viewBox (square-ish)
+mx1,my1,mx2,my2 = fit(*MARK_BBOX, 6)
+# lockup viewBox: union of mark + text
+lx1,ly1,lx2,ly2 = fit(min(MARK_BBOX[0],TEXT_BBOX[0]), MARK_BBOX[1],
+                      max(MARK_BBOX[2],TEXT_BBOX[2]), TEXT_BBOX[3], 8)
 
+def svg(w, h, body):
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w:.0f} {h:.0f}" '
+            f'role="img" aria-label="SALIRA">\n  {body}\n</svg>\n')
 
-def core_band_paths():
-    cy_core = CY + CORE_DY
-    outer = rounded_poly(tri_pts(CX, cy_core, CORE_R), CORE_CR)
-    hole = rounded_poly(tri_pts(CX, cy_core, CORE_HR), CORE_HCR)
-    return outer, hole
+# ---- logo-mark.svg  (mark only, ink strokes, for light backgrounds) — SQUARE viewBox for 1:1 containers
+mw, mh = mx2-mx1, my2-my1
+side = max(mw, mh)
+mcx = (side - mw)/2   # centering offsets
+mcy = (side - mh)/2
+body = mark_paths(INK, sw=2.4, tx=-mx1+mcx, ty=-my1+mcy)
+open(f'{OUT}/logo-mark.svg','w').write(svg(side, side, body))
 
+# ---- logo-mark-dark.svg (cream strokes, for dark backgrounds)
+body = mark_paths(WHITE_INK, sw=2.4, tx=-mx1+mcx, ty=-my1+mcy)
+open(f'{OUT}/logo-mark-dark.svg','w').write(svg(side, side, body))
 
-def halo_group(stroke, stroke_weight):
-    """3 stroke-only triangles orbiting the mark center (C3 pinwheel).
+# ---- logo.svg (full lockup, ink) + logo-dark.svg (cream)
+lw, lh = lx2-lx1, ly2-ly1
+body = (mark_paths(INK, sw=1.9, tx=-lx1, ty=-ly1) + '\n  ' +
+        text_paths(INK, TEXT_BBOX[0]-lx1, TEXT_BBOX[1]-ly1))
+open(f'{OUT}/logo.svg','w').write(svg(lw, lh, body))
 
-    Each copy: the base triangle (built about its own center, which sits
-    HALO_LIFT above the mark center) rotated 120k deg about the MARK center.
-    Rotating about the triangle's own center would map it onto itself.
-    """
-    parts = []
-    for k in range(3):
-        pts = tri_pts(CX, CY - HALO_LIFT, HALO_R, rot_deg=HALO_TWIST)
-        a = math.radians(120.0 * k)
-        ca, sa = math.cos(a), math.sin(a)
-        rotated = []
-        for (x, y) in pts:
-            dx, dy = x - CX, y - CY
-            rotated.append((CX + dx * ca - dy * sa, CY + dx * sa + dy * ca))
-        parts.append(
-            f'<path d="{rounded_poly(rotated, HALO_CR)}" fill="none" '
-            f'stroke="{stroke}" stroke-width="{stroke_weight}" '
-            f'stroke-linejoin="round"/>'
-        )
-    return "\n    ".join(parts)
+body = (mark_paths(WHITE_INK, sw=1.9, tx=-lx1, ty=-ly1) + '\n  ' +
+        text_paths(WHITE_INK, TEXT_BBOX[0]-lx1, TEXT_BBOX[1]-ly1))
+open(f'{OUT}/logo-dark.svg','w').write(svg(lw, lh, body))
 
+# ---- icon.svg (favicon: cream rounded square + mark)
+S = 120
+m_scale = 0.74 * S / side
+mw2, mh2 = mw*m_scale, mh*m_scale
+ix = (S-mw2)/2; iy = (S-mh2)/2
+icon_sw = 2.8 / m_scale   # effective ~2.8 units at icon scale (legible at small sizes)
+body = (f'<rect width="{S}" height="{S}" rx="26" fill="{CREAM}"/>\n  '
+        f'<g transform="translate({ix:.2f} {iy:.2f}) scale({m_scale:.4f}) translate({-mx1:.2f} {-my1:.2f})">\n  '
+        + mark_paths(INK, sw=icon_sw, s=1) + '\n  </g>')
+open('/home/z/my-project/src/app/icon.svg','w').write(svg(S, S, body))
 
-def core_group(fill, stroke, stroke_weight):
-    outer, hole = core_band_paths()
-    return (
-        f'<path d="{outer} {hole}" fill="{fill}" fill-rule="evenodd" '
-        f'stroke="{stroke}" stroke-width="{stroke_weight}" '
-        f'stroke-linejoin="round"/>'
-    )
+print('SVGs written')
+print('mark viewBox:', mw, mh, '| lockup viewBox:', lw, lh)
 
-
-def mark_bbox():
-    """Bbox of the mark incl. strokes (halo reach vs low core)."""
-    r_halo = HALO_R + HALO_LIFT + STROKES_DISPLAY["halo"]
-    r_core = CORE_R + CORE_DY + STROKES_DISPLAY["core"]
-    r_max = max(r_halo, r_core)
-    return (CX - r_halo, CY - r_halo, CX + r_halo, CY + r_max)
-
-
-# ── wordmark ─────────────────────────────────────────────────────────────
-FONT_PATH = os.path.join(ROOT, "download/fonts/spacegrotesk-700.ttf")
-WORD = "SALIRA"
-
-
-def wordmark_paths(scale_to_width):
-    font = TTFont(FONT_PATH)
-    gs = font.getGlyphSet()
-    cmap = font.getBestCmap()
-    upm = font["head"].unitsPerEm
-    cap = getattr(font["OS/2"], "sCapHeight", int(0.7 * upm))
-    track = WORD_TRACK_EM * upm
-
-    names = [cmap[ord(c)] for c in WORD]
-    widths = [gs[n].width for n in names]
-    total_units = sum(widths) + track * (len(names) - 1)
-    s = scale_to_width / total_units
-
-    parts, x = [], 0.0  # x accumulates in SCALED pixels
-    for name, adv in zip(names, widths):
-        pen = SVGPathPen(gs)
-        tp = TransformPen(pen, Transform(s, 0, 0, -s, x, 0))
-        gs[name].draw(tp)
-        d = pen.getCommands()
-        if d:
-            parts.append(d)
-        x += (adv + track) * s
-    return " ".join(parts), cap * s, s * upm
-
-
-# ── builders ─────────────────────────────────────────────────────────────
-def build_lockup(stroke, word_color, core_fill=PURPLE, sw=STROKES_DISPLAY):
-    wm_d, cap_h, font_px = wordmark_paths(WORD_W)
-    x0, y0, x1, y1 = mark_bbox()
-    pad = 4.0
-    w = max(x1 - x0, WORD_W + 2 * pad)
-    cx_off = (w - (x1 - x0)) / 2.0  # center mark inside canvas
-    baseline = y1 + WORD_GAP + cap_h
-    vh = math.ceil(baseline + cap_h * 0.12)
-    wm_x = (w - WORD_W) / 2.0
-    fatten = WORD_FATTEN * 100.0 / font_px
-    return f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w:.0f} {vh}" role="img" aria-label="SALIRA">
-  <g transform="translate({cx_off - x0:.3f} 0)">
-    {halo_group(stroke, sw["halo"])}
-    {core_group(core_fill, stroke, sw["core"])}
-    <g transform="translate({wm_x:.3f} {baseline:.3f})">
-      <path d="{wm_d}" fill="{word_color}" stroke="{word_color}" stroke-width="{fatten:.3f}" stroke-linejoin="round"/>
-    </g>
+# ---------------------------------------------------------------- OG image
+import cairosvg
+OG_W, OG_H = 1200, 630
+# lockup body (mark + text) in local coords 0..lw / 0..lh
+lockup_body = (mark_paths(INK, sw=1.9, tx=-lx1, ty=-ly1) + '\n    ' +
+               text_paths(INK, TEXT_BBOX[0]-lx1, TEXT_BBOX[1]-ly1))
+scale = min((OG_W*0.52)/lw, (OG_H*0.78)/lh)
+gx = (OG_W - lw*scale)/2
+gy = (OG_H - lh*scale)/2
+og = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {OG_W} {OG_H}">
+  <rect width="{OG_W}" height="{OG_H}" fill="{CREAM}"/>
+  <rect x="28" y="28" width="{OG_W-56}" height="{OG_H-56}" fill="none" stroke="{INK}" stroke-opacity="0.15" stroke-width="2"/>
+  <g transform="translate({gx:.2f} {gy:.2f}) scale({scale:.4f})">
+    {lockup_body}
   </g>
 </svg>
 '''
+open('/tmp/og.svg','w').write(og)
+cairosvg.svg2png(bytestring=og.encode(), write_to=f'{OUT}/og-image.png',
+                 output_width=OG_W, output_height=OG_H)
+print('og-image.png written')
 
-
-def build_mark(stroke, core_fill=PURPLE, sw=STROKES_DISPLAY):
-    x0, y0, x1, y1 = mark_bbox()
-    w = x1 - x0
-    return f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w:.0f} {w:.0f}" role="img" aria-label="SALIRA mark">
-  <g transform="translate({-x0:.3f} {-y0:.3f})">
-    {halo_group(stroke, sw["halo"])}
-    {core_group(core_fill, stroke, sw["core"])}
-  </g>
-</svg>
-'''
-
-
-def build_icon():
-    x0, y0, x1, y1 = mark_bbox()
-    w = x1 - x0
-    tile = 120.0
-    m_scale = 0.74 * tile / w
-    off = (tile - w * m_scale) / 2.0
-    return f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {tile:.0f} {tile:.0f}">
-  <rect width="{tile:.0f}" height="{tile:.0f}" rx="26" fill="{OBSID}"/>
-  <g transform="translate({off:.3f} {off:.3f}) scale({m_scale:.5f})">
-    {halo_group(LIGHT, STROKES_ICON["halo"])}
-    {core_group(PURPLE, LIGHT, STROKES_ICON["core"])}
-  </g>
-</svg>
-'''
-
-
-def write(path, content):
-    full = os.path.join(ROOT, path)
-    os.makedirs(os.path.dirname(full), exist_ok=True)
-    with open(full, "w", encoding="utf-8") as f:
-        f.write(content)
-    print("wrote", path, len(content), "bytes")
-
-
-if __name__ == "__main__":
-    write("public/logo.svg", build_lockup(NAVY, INK))
-    write("public/logo-dark.svg", build_lockup(LIGHT, LIGHTW))
-    write("public/logo-mark.svg", build_mark(NAVY))
-    write("public/logo-mark-dark.svg", build_mark(LIGHT))
-    write("src/app/icon.svg", build_icon())
-    write("brand/logo-master.svg", build_lockup(NAVY, INK))
-    write("brand/logo-mono-white.svg", build_lockup("#FFFFFF", "#FFFFFF"))
-    write("brand/logo-mono-navy.svg", build_lockup(NAVY, NAVY))
-    # previews for visual QA
-    import cairosvg
-    prev = {
-        "logo.svg": "#FFFEF8",
-        "logo-dark.svg": OBSID,
-        "logo-mono-navy.svg": "#FFFEF8",
-        "logo-mono-white.svg": OBSID,
-        "icon.svg": None,
-        "logo-mark.svg": "#FFFEF8",
-        "logo-mark-dark.svg": OBSID,
-    }
-    os.makedirs("/tmp/logo_preview", exist_ok=True)
-    for name, bg in prev.items():
-        src = os.path.join(ROOT, "public", name)
-        if not os.path.exists(src):
-            src = os.path.join(ROOT, "brand", name)
-        if not os.path.exists(src):
-            src = os.path.join(ROOT, "src", "app", name)
-        out = f"/tmp/logo_preview/{name.replace('.svg', '')}.png"
-        kw = {"output_width": 480}
-        if bg:
-            cairosvg.svg2png(url=src, write_to=out, background_color=bg, **kw)
-        else:
-            cairosvg.svg2png(url=src, write_to=out, **kw)
-        print("preview", out)
+# ---------------------------------------------------------------- brand files (master + monos)
+BR = '/home/z/my-project/brand'
+def lockup_body_for(stroke):
+    return (mark_paths(stroke, sw=1.9, tx=-lx1, ty=-ly1) + '\n  ' +
+            text_paths(stroke, TEXT_BBOX[0]-lx1, TEXT_BBOX[1]-ly1))
+open(f'{BR}/logo-master.svg','w').write(svg(lw, lh, lockup_body_for(INK)))          # master (ink)
+open(f'{BR}/logo-mono-white.svg','w').write(svg(lw, lh, lockup_body_for('#FFFFFF'))) # mono white
+open(f'{BR}/logo-mono-navy.svg','w').write(svg(lw, lh, lockup_body_for('#273842')))  # mono navy
+print('brand master + monos written')

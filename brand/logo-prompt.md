@@ -1,85 +1,65 @@
 # لوگوی SALIRA — وضعیت نهایی و پرامپت‌ها
 
-> **وضعیت: نهایی شد.** طرح پین‌ویل مثلثی توسط کاربر با ابزار تصویرساز تولید و تأیید شد
-> (2026-11-12) و به‌صورت پارامتریک وکتورسازی شد. مرجع رسمی: `brand/logo-master.svg` و `public/logo.svg`.
+> **وضعیت: نهایی شد (v3).** کاربر تصویر مرجع لوگو را ارسال کرد (`upload/pasted_image_1794422333674.png`، 2026-11-12):
+> حرف S زاویه‌دارِ خط‌دوختِ مرکّی روی کارت کرم با وردمارک `SALIRA` و `SINCE 2026`.
+> مارک به‌صورت پارامتریک بازسازی و وردمارک‌ها از خود تصویر تریس شدند.
+> مرجع رسمی: `brand/logo-master.svg` و `public/logo.svg`.
 
 ## مشخصات فنی لوگوی نهایی
 
 | بخش | شرح |
 |---|---|
-| هسته | مثلث متساوی‌الأضلاع گردگوشه، پر بنفش `#8B54FF`، سوراخ منفی مثلثی در مرکز، خط دور سرمه‌ای `#273842`؛ مرکز هسته ~۱۷ واحد پایین‌تر از مرکز مدار |
-| هاله | ۳ مثلث خطی (بدون پرشدگی) سرمه‌ای، چرخش ۱۲۰° حول مرکز مدار + پیچ ۸° ساعتگرد (پین‌ویل)، شعاع مدار ~۲۰ واحد |
-| وردمارک | `SALIRA` — Space Grotesk 700 وکتورشده (بدون وابستگی به فونت)، tracking ≈ ۲٪، زیر مارک |
-| نسبت | عرض وردمارک ≈ عرض مارک؛ کل لاک‌آپ ≈ ۱:۱٫۳ |
+| مارک | S زاویه‌دار از **دو مسیر شکستهٔ پیوسته** (بدون پرشدگی، فقط خط). مسیر اصلی ۸ نقطه: `(147,132)→(139,152)→(182,153)→(193,124)→(159,109)→(172,76)→(233,76)→(226,99)` در دستگاه مختصات طرح مرجع (خانوادهٔ y به پایین)؛ مسیر دوم موازی و کوچکتر: `(188,80)→(180,104)→(214,118)→(201,152)→(191,153)→(204,122)→(168,105)→(181,76)` |
+| ریتم | خطوط موازی با گام ثابت ~۹-۱۱ واحد — افکت «دوخت/راه‌پله»؛ دو انتهای مسیر اصلی (بالا-راست و پایین-چپ) باز می‌مانند |
+| هندسه | فقط خط راست؛ گوشه‌های تیز (miter)؛ ضخامت خط مرکّی ≈ ۲ واحد در مختصات مرجع |
+| رنگ‌ها | خطوط و متن: مرکّی `#3B3A38`؛ زمینهٔ برند: کرم `#FFF8EE`؛ نسخهٔ تیره: خطوط کرم `#FFF6E8` |
+| وردمارک | `SALIRA` (حروف بزرگ، tracking باز) + `SINCE 2026` (ایتالیک) — تریس‌شده از تصویر مرجع، بدون وابستگی به فونت |
+| نسبت | مارک ≈ ۹۵×۷۷؛ لاک‌آپ ≈ ۱۵۶×۱۵۴ (تقریباً مربع)؛ وردمارک کمی پهن‌تر از مارک |
 
 ### فایل‌ها
 
-- `public/logo.svg` — لاک‌آپ برای پس‌زمینه‌ی روشن (خطوط سرمه‌ای)
-- `public/logo-dark.svg` — لاک‌آپ برای پس‌زمینه‌ی تیره (خطوط روشن `#E9EDFB`)
-- `public/logo-mark.svg` / `public/logo-mark-dark.svg` — فقط مارک (نوبار/فوتر)
-- `src/app/icon.svg` — favicon: مارک روی کاشی اوبسیدین `#0D1126`
+- `public/logo.svg` — لاک‌آپ برای پس‌زمینه‌ی روشن (خطوط مرکّی)
+- `public/logo-dark.svg` — لاک‌آپ برای پس‌زمینه‌ی تیره (خطوط کرم `#FFF6E8`)
+- `public/logo-mark.svg` / `public/logo-mark-dark.svg` — فقط مارک، viewBox مربعی (نوبار/فوتر/هدر اپ)
+- `src/app/icon.svg` — favicon: مارک روی کاشی کرم گردگوشه `#FFF8EE`
 - `brand/logo-mono-white.svg` / `brand/logo-mono-navy.svg` — تک‌رنگ‌ها
 - `brand/logo-master.svg` — نسخه‌ی مادر
+- `public/og-image.png` — کارت اشتراک‌گذاری ۱۲۰۰×۶۳۰ روی کرم با قاب ظریف
 - `scripts/build_logo.py` — مولد پارامتریک؛ هر تغییر هندسه/رنگ از همین فایل
 
-### نسخه‌بندی تصویرساز (برای تولید دوباره یا تنوع)
+### پرامپت بازتولید مارک (برای تنوع یا نسخه‌های مشابه)
 
 ```
-Minimal geometric logo mark for a privacy-tech brand. A solid rounded-corner
-equilateral triangle with a small triangular negative-space hole in its center,
-filled vivid violet (#8B54FF) with a thin dark-navy (#273842) outline, sitting
-slightly below center. Around it, three larger hollow triangle outlines in the
-same dark navy (#273842) rotate 120 degrees apart around the mark center,
-slightly twisted clockwise like a pinwheel, their edges passing behind the
-violet core. Flat vector style, crisp uniform strokes, off-white background
-(#FFFEF8), balanced asymmetric composition, modern tech aesthetic. Below the
-mark: the wordmark SALIRA in bold geometric sans-serif (Space Grotesk style),
-near-black. No tagline, no extra text, no shadows, no 3D, no gradients inside
-the triangles.
+Minimal geometric logo mark for a privacy-tech brand: an angular letter S built
+from two continuous thin black zigzag polylines (outline style, no fill) on a
+warm cream background (#FFF8EE). The S is made of straight segments only, with
+sharp miter corners: a long top bar, a steep left diagonal, a shallow middle
+diagonal, a steep right diagonal and a long bottom bar; a second parallel
+polyline runs alongside it one step inward, creating a stitched,
+double-line staircase rhythm with constant spacing. Both ends of the main
+zigzag stay open and cut at an angle. Soft black ink (#3B3A38) lines, flat
+vector style, elegant fashion-minimal aesthetic, no gradients, no shadows,
+no rounded corners. Below the mark: the wordmark SALIRA in spaced uppercase
+geometric sans-serif with the line "SINCE 2026" in italic beneath it.
 ```
 
 Negative prompt:
 
 ```
-photorealistic, 3D render, bevel, emboss, heavy drop shadow, neon glow overload,
-rainbow gradient, extra text, tagline, watermark, busy background, chrome effect,
-gradient mesh, low contrast, distorted triangles, sketch lines
+photorealistic, 3D render, drop shadow, neon glow, rainbow gradient, extra text,
+tagline, watermark, busy background, chrome effect, rounded line caps, curves,
+serif letters, low contrast, distorted geometry, sketch lines
 ```
 
 ---
 
-## آرشیو — پرامپت‌های مرحله‌ی ایده‌پردازی (نسخه‌ی مونوگرام S، منسوخ)
+## آرشیو — نسخه‌های پیشین
 
-این پرامپت‌ها مونوگرام «S برش‌خورده» را می‌ساختند؛ ابزار تصویرساز به‌جای آن
-ترکیب مثلثی را تولید کرد که توسط کاربر انتخاب و نهایی شد. برای مستندسازی نگه داشته می‌شوند.
+### v2 — طرح پین‌ویل مثلثی (منسوخ 2026-11-12)
 
-### A — App Icon
+مثلث گردگوشهٔ بنفش با ۳ مثلث خطی چرخیده؛ توسط ابزار تصویرساز تولید و موقتاً نهایی شد،
+سپس کاربر طرح خطی S را جایگزین کرد. پرامپت آن نسخه در تاریخچه‌ی گیت (`brand/logo-prompt.md` بازنگری قبلی) موجود است.
 
-```
-Minimal geometric app icon for a privacy-tech brand. A bold letter S monogram
-constructed from two circular arc segments (each roughly 270 degrees) with
-rounded end caps, drawn with a smooth diagonal gradient from vivid violet
-(#7C3AED) at the top to bright blue (#3B82F6) at the bottom. Two thin
-horizontal negative-space gaps slice cleanly through the monogram, creating a
-sliced, engineered look. Background: deep navy-obsidian rounded square
-(#0D1126) with a very subtle violet glow behind the letter and a thin 1.5px
-gradient border, corner radius about 22 percent. Flat vector style, crisp
-clean edges, perfectly centered composition, modern SaaS aesthetic, high
-contrast. No extra text, no letters other than the single S, no drop shadows,
-no 3D bevels, no photorealism.
-```
+### v1 — مونوگرام S گرادیانتی (منسوخ)
 
-### B — Horizontal Lockup
-
-```
-Horizontal logo lockup for a privacy-tech brand on a deep navy background
-(#0D1126). Left side: a geometric S monogram made of two 270-degree circular
-arc segments with rounded caps, upper segment vivid violet (#7C3AED) blending
-into lower segment bright blue (#3B82F6), sliced by two thin horizontal
-negative-space gaps, with a subtle violet glow behind it. Right side: the
-wordmark SALIRA in uppercase geometric sans-serif (Space Grotesk style),
-generous letter-spacing around 30 percent tracking, clean off-white (#F2F4FF).
-Flat vector branding style, crisp edges, balanced negative space, modern
-minimal SaaS aesthetic. No tagline, no words besides SALIRA, no extra icons,
-no shadows, no 3D effects.
-```
+دو کمان ۲۷۰ درجه با گرادیانت بنفش→آبی و دو برش افقی؛ هرگز به فایل‌های سایت راه نیافت.

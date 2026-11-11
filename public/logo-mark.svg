@@ -1,8 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="SALIRA mark">
-  <g transform="translate(0.100 0.100)">
-    <path d="M61.709 6.358 A3.500 3.500 0 0 1 67.713 7.201 L88.540 58.752 L88.540 58.752 A3.500 3.500 0 0 1 84.808 63.529 L29.750 55.791 L29.750 55.791 A3.500 3.500 0 0 1 27.479 50.170 Z" fill="none" stroke="#273842" stroke-width="1.3" stroke-linejoin="round"/>
-    <path d="M105.601 88.302 A3.500 3.500 0 0 1 101.869 93.079 L46.811 85.341 L46.811 85.341 A3.500 3.500 0 0 1 44.540 79.720 L78.770 35.908 L78.770 35.908 A3.500 3.500 0 0 1 84.773 36.751 Z" fill="none" stroke="#273842" stroke-width="1.3" stroke-linejoin="round"/>
-    <path d="M12.690 85.341 A3.500 3.500 0 0 1 10.419 79.720 L44.649 35.908 L44.649 35.908 A3.500 3.500 0 0 1 50.652 36.751 L71.480 88.302 L71.480 88.302 A3.500 3.500 0 0 1 67.747 93.079 Z" fill="none" stroke="#273842" stroke-width="1.3" stroke-linejoin="round"/>
-    <path d="M53.072 50.100 A8.000 8.000 0 0 1 66.928 50.100 L86.760 84.450 L86.760 84.450 A8.000 8.000 0 0 1 79.832 96.450 L40.168 96.450 L40.168 96.450 A8.000 8.000 0 0 1 33.240 84.450 Z M57.402 65.700 A3.000 3.000 0 0 1 62.598 65.700 L71.085 80.400 L71.085 80.400 A3.000 3.000 0 0 1 68.487 84.900 L51.513 84.900 L51.513 84.900 A3.000 3.000 0 0 1 48.915 80.400 Z" fill="#8B54FF" fill-rule="evenodd" stroke="#273842" stroke-width="1.8" stroke-linejoin="round"/>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 107 107" role="img" aria-label="SALIRA">
+  <path d="M 14.00 71.00 L 6.00 91.00 L 49.00 92.00 L 60.00 63.00 L 26.00 48.00 L 39.00 15.00 L 100.00 15.00 L 93.00 38.00" fill="none" stroke="#3B3A38" stroke-width="2.40" stroke-linejoin="miter"/>
+  <path d="M 55.00 19.00 L 47.00 43.00 L 81.00 57.00 L 68.00 91.00 L 58.00 92.00 L 71.00 61.00 L 35.00 44.00 L 48.00 15.00" fill="none" stroke="#3B3A38" stroke-width="2.40" stroke-linejoin="miter"/>
 </svg>
