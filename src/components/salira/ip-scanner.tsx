@@ -603,7 +603,7 @@ export function IpScanner() {
                 type="checkbox"
                 checked={ack}
                 onChange={(e) => setAck(e.target.checked)}
-                className="h-4 w-4 shrink-0 accent-[#d4b16a]"
+                className="h-4 w-4 shrink-0 accent-[#8b54ff]"
                 aria-label={tr.scan_ack}
               />
               <span className={`text-[12.5px] font-bold ${ack ? "text-ok" : "text-ink/70"}`}>{tr.scan_ack}</span>
@@ -978,7 +978,7 @@ export function IpScanner() {
                         checked={picked.has(r.ip)}
                         disabled={!(r.local?.avg !== null || r.server?.alive)}
                         onChange={() => toggleSel(r.ip)}
-                        className="h-3.5 w-3.5 accent-[#d4b16a] disabled:opacity-25"
+                        className="h-3.5 w-3.5 accent-[#8b54ff] disabled:opacity-25"
                         aria-label={`${r.ip}:${r.port}`}
                       />
                     </td>

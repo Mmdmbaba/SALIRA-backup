@@ -57,101 +57,105 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-/* ─────────────── DARK (default) · Obsidian & Champagne ─────────────── */
+/* ─────────────── DARK (default) · Obsidian & Violet ───────────────
+   NOTE: token names (--gold, --goldsoft, --golddeep) and class names
+   (.btn-gold, .gold-gradient-text, .gold-edge) are HISTORIC (EEMA-era)
+   identifiers kept for stability. Their values are the SALIRA violet
+   and blue brand palette. */
 :root,
 .dark {
   --radius: 0.875rem;
 
-  --background: #0a0908;
-  --foreground: #ede7db;
-  --ink: #ede7db;
-  --inkinv: #171106;
-  --panel: #14110e;
-  --card: #100e0c;
-  --card-foreground: #ede7db;
-  --popover: #14110e;
-  --popover-foreground: #ede7db;
-  --primary: #d4b16a;
-  --primary-foreground: #141008;
-  --secondary: rgba(212, 177, 106, 0.08);
-  --secondary-foreground: #ead7a9;
-  --muted: rgba(237, 231, 219, 0.05);
-  --muted-foreground: rgba(237, 231, 219, 0.55);
-  --accent: rgba(212, 177, 106, 0.12);
-  --accent-foreground: #ead7a9;
-  --destructive: #d98a7a;
-  --border: rgba(212, 177, 106, 0.14);
-  --input: rgba(212, 177, 106, 0.2);
-  --ring: rgba(212, 177, 106, 0.55);
-  --gold: #d4b16a;
-  --goldsoft: #ead7a9;
-  --golddeep: #9c7c3c;
-  --ok: #8fbf9f;
-  --bad: #d98a7a;
-  --line: rgba(212, 177, 106, 0.14);
-  --line-soft: rgba(212, 177, 106, 0.09);
-  --line-strong: rgba(212, 177, 106, 0.32);
-  --line-hi: rgba(212, 177, 106, 0.55);
-  --chart-1: #d4b16a;
-  --chart-2: #8fbf9f;
-  --chart-3: #c9a25a;
-  --chart-4: #a8967a;
-  --chart-5: #d98a7a;
-  --sidebar: #100e0c;
-  --sidebar-foreground: #ede7db;
-  --sidebar-primary: #d4b16a;
-  --sidebar-primary-foreground: #141008;
-  --sidebar-accent: rgba(212, 177, 106, 0.12);
-  --sidebar-accent-foreground: #ead7a9;
-  --sidebar-border: rgba(212, 177, 106, 0.14);
-  --sidebar-ring: rgba(212, 177, 106, 0.55);
+  --background: #0d1126;
+  --foreground: #f2f4ff;
+  --ink: #f2f4ff;
+  --inkinv: #0a0e20;
+  --panel: #151b38;
+  --card: #10152b;
+  --card-foreground: #f2f4ff;
+  --popover: #151b38;
+  --popover-foreground: #f2f4ff;
+  --primary: #8b54ff;
+  --primary-foreground: #ffffff;
+  --secondary: rgba(139, 84, 255, 0.1);
+  --secondary-foreground: #c9b4ff;
+  --muted: rgba(242, 244, 255, 0.05);
+  --muted-foreground: rgba(242, 244, 255, 0.58);
+  --accent: rgba(139, 84, 255, 0.14);
+  --accent-foreground: #c9b4ff;
+  --destructive: #f87171;
+  --border: rgba(154, 163, 199, 0.16);
+  --input: rgba(154, 163, 199, 0.24);
+  --ring: rgba(139, 84, 255, 0.55);
+  --gold: #8b54ff;
+  --goldsoft: #c9b4ff;
+  --golddeep: #6d3fd8;
+  --ok: #34d399;
+  --bad: #f87171;
+  --line: rgba(154, 163, 199, 0.14);
+  --line-soft: rgba(154, 163, 199, 0.09);
+  --line-strong: rgba(139, 84, 255, 0.32);
+  --line-hi: rgba(139, 84, 255, 0.55);
+  --chart-1: #8b54ff;
+  --chart-2: #3b82f6;
+  --chart-3: #c9b4ff;
+  --chart-4: #6d3fd8;
+  --chart-5: #f87171;
+  --sidebar: #10152b;
+  --sidebar-foreground: #f2f4ff;
+  --sidebar-primary: #8b54ff;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: rgba(139, 84, 255, 0.14);
+  --sidebar-accent-foreground: #c9b4ff;
+  --sidebar-border: rgba(154, 163, 199, 0.16);
+  --sidebar-ring: rgba(139, 84, 255, 0.55);
 }
 
-/* ─────────────── LIGHT · Ivory & Bronze ─────────────── */
+/* ─────────────── LIGHT · Porcelain & Violet ─────────────── */
 .light {
-  --background: #f4efe6;
-  --foreground: #221b10;
-  --ink: #221b10;
-  --inkinv: #fdfaf2;
-  --panel: #fffdf7;
-  --card: #faf6ec;
-  --card-foreground: #221b10;
-  --popover: #fffdf7;
-  --popover-foreground: #221b10;
-  --primary: #a9822f;
-  --primary-foreground: #fdfaf2;
-  --secondary: rgba(169, 130, 47, 0.1);
-  --secondary-foreground: #7a5d1e;
-  --muted: rgba(34, 27, 16, 0.05);
-  --muted-foreground: rgba(34, 27, 16, 0.62);
-  --accent: rgba(169, 130, 47, 0.12);
-  --accent-foreground: #7a5d1e;
-  --destructive: #b45a48;
-  --border: rgba(122, 93, 30, 0.2);
-  --input: rgba(122, 93, 30, 0.28);
-  --ring: rgba(169, 130, 47, 0.55);
-  --gold: #a9822f;
-  --goldsoft: #7a5d1e;
-  --golddeep: #8a6a24;
-  --ok: #3e7d54;
-  --bad: #b45a48;
-  --line: rgba(122, 93, 30, 0.22);
-  --line-soft: rgba(122, 93, 30, 0.13);
-  --line-strong: rgba(122, 93, 30, 0.4);
-  --line-hi: rgba(122, 93, 30, 0.62);
-  --chart-1: #a9822f;
-  --chart-2: #3e7d54;
-  --chart-3: #8a6a24;
-  --chart-4: #7a6a4d;
-  --chart-5: #b45a48;
-  --sidebar: #faf6ec;
-  --sidebar-foreground: #221b10;
-  --sidebar-primary: #a9822f;
-  --sidebar-primary-foreground: #fdfaf2;
-  --sidebar-accent: rgba(169, 130, 47, 0.12);
-  --sidebar-accent-foreground: #7a5d1e;
-  --sidebar-border: rgba(122, 93, 30, 0.2);
-  --sidebar-ring: rgba(169, 130, 47, 0.55);
+  --background: #f5f6fb;
+  --foreground: #0d1126;
+  --ink: #0d1126;
+  --inkinv: #f2f4ff;
+  --panel: #ffffff;
+  --card: #f8f9fd;
+  --card-foreground: #0d1126;
+  --popover: #ffffff;
+  --popover-foreground: #0d1126;
+  --primary: #7c3aed;
+  --primary-foreground: #ffffff;
+  --secondary: rgba(124, 58, 237, 0.08);
+  --secondary-foreground: #5b21b6;
+  --muted: rgba(13, 17, 38, 0.05);
+  --muted-foreground: rgba(13, 17, 38, 0.62);
+  --accent: rgba(124, 58, 237, 0.1);
+  --accent-foreground: #5b21b6;
+  --destructive: #e11d48;
+  --border: rgba(13, 17, 38, 0.13);
+  --input: rgba(13, 17, 38, 0.2);
+  --ring: rgba(124, 58, 237, 0.55);
+  --gold: #7c3aed;
+  --goldsoft: #5b21b6;
+  --golddeep: #6d28d9;
+  --ok: #059669;
+  --bad: #e11d48;
+  --line: rgba(124, 58, 237, 0.16);
+  --line-soft: rgba(124, 58, 237, 0.09);
+  --line-strong: rgba(124, 58, 237, 0.32);
+  --line-hi: rgba(124, 58, 237, 0.55);
+  --chart-1: #7c3aed;
+  --chart-2: #2563eb;
+  --chart-3: #6d28d9;
+  --chart-4: #0891b2;
+  --chart-5: #e11d48;
+  --sidebar: #f8f9fd;
+  --sidebar-foreground: #0d1126;
+  --sidebar-primary: #7c3aed;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: rgba(124, 58, 237, 0.1);
+  --sidebar-accent-foreground: #5b21b6;
+  --sidebar-border: rgba(13, 17, 38, 0.13);
+  --sidebar-ring: rgba(124, 58, 237, 0.55);
 }
 
 * {
@@ -187,12 +191,12 @@ body {
 }
 
 ::selection {
-  background: rgba(212, 177, 106, 0.32);
-  color: #171106;
+  background: rgba(139, 84, 255, 0.35);
+  color: #f2f4ff;
 }
 .light ::selection {
-  background: rgba(169, 130, 47, 0.3);
-  color: #221b10;
+  background: rgba(124, 58, 237, 0.22);
+  color: #0d1126;
 }
 
 /* focus visibility (a11y) */
@@ -246,7 +250,7 @@ body {
 }
 
 .gold-gradient-text {
-  background: linear-gradient(100deg, #f3e5c3 0%, #d4b16a 45%, #a8853f 75%, #e8d5a8 100%);
+  background: linear-gradient(100deg, #c9b4ff 0%, #8b54ff 45%, #3b82f6 75%, #a78bfa 100%);
   background-size: 200% 100%;
   -webkit-background-clip: text;
   background-clip: text;
@@ -254,7 +258,7 @@ body {
   animation: gold-sheen 8s ease-in-out infinite;
 }
 .light .gold-gradient-text {
-  background: linear-gradient(100deg, #8a6a24 0%, #a9822f 45%, #6d5218 75%, #a9822f 100%);
+  background: linear-gradient(100deg, #5b21b6 0%, #7c3aed 45%, #4f46e5 75%, #7c3aed 100%);
   background-size: 200% 100%;
   -webkit-background-clip: text;
   background-clip: text;
@@ -313,22 +317,22 @@ body {
 
 /* ---------------- buttons ---------------- */
 .btn-gold {
-  background: linear-gradient(120deg, #ecd9ab 0%, #d4b16a 40%, #b98f47 75%, #dcbf7f 100%);
+  background: linear-gradient(120deg, #a78bfa 0%, #8b54ff 40%, #6d3fd8 75%, #9f7cff 100%);
   background-size: 220% 100%;
-  color: #171106;
+  color: #ffffff;
   font-weight: 700;
-  box-shadow: 0 14px 38px -14px rgba(212, 177, 106, 0.55), inset 0 1px 0 rgba(255, 250, 235, 0.6);
+  box-shadow: 0 14px 38px -14px rgba(139, 84, 255, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.28);
   transition: background-position 0.6s ease, box-shadow 0.4s ease, transform 0.25s ease;
 }
 .btn-gold:hover {
   background-position: 90% 50%;
-  box-shadow: 0 20px 48px -14px rgba(212, 177, 106, 0.7), inset 0 1px 0 rgba(255, 250, 235, 0.7);
+  box-shadow: 0 20px 48px -14px rgba(139, 84, 255, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.34);
 }
 .btn-gold:active {
   transform: translateY(1px);
 }
 .light .btn-gold {
-  color: #2a1f08;
+  color: #ffffff;
 }
 
 .btn-ghost-lux {
@@ -415,8 +419,8 @@ body {
 .float-y { animation: float-y 7s ease-in-out infinite; }
 
 @keyframes pulse-dot {
-  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(212, 177, 106, 0.5); }
-  50% { opacity: 0.75; box-shadow: 0 0 0 6px rgba(212, 177, 106, 0); }
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(139, 84, 255, 0.5); }
+  50% { opacity: 0.75; box-shadow: 0 0 0 6px rgba(139, 84, 255, 0); }
 }
 .pulse-dot { animation: pulse-dot 2.4s ease-in-out infinite; }
 

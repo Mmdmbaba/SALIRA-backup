@@ -85,13 +85,20 @@ export function Navbar() {
         className="mx-auto flex h-[68px] max-w-6xl items-center justify-between px-5 lg:px-8"
         aria-label="SALIRA main navigation"
       >
-        {/* wordmark — reads exactly SALIRA */}
+        {/* brand mark + wordmark — reads exactly SALIRA */}
         <a href="#top" className="group flex items-center gap-2.5" aria-label="SALIRA home">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={theme === "dark" ? "/logo-mark-dark.svg" : "/logo-mark.svg"}
+            alt=""
+            aria-hidden
+            width={27}
+            height={27}
+            className="h-[27px] w-[27px] shrink-0 transition-transform duration-300 group-hover:scale-110"
+          />
           <span className="font-display text-[22px] tracking-[0.34em] text-ink transition-colors group-hover:text-goldsoft">
             SALIRA
           </span>
-          <span aria-hidden className="h-4 w-px bg-line-strong" />
-          <span aria-hidden className="pulse-dot h-1.5 w-1.5 rounded-full bg-gold" />
         </a>
 
         {/* ── ONE list: row on desktop, panel on mobile ── */}

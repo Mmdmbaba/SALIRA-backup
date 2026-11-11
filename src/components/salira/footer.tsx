@@ -14,6 +14,7 @@ import {
 
 export function Footer() {
   const lang = useLang((s) => s.lang);
+  const theme = useLang((s) => s.theme);
   const tr = t(lang);
   const [modal, setModal] = useState<"privacy" | "terms" | null>(null);
 
@@ -55,9 +56,16 @@ export function Footer() {
           <Reveal>
             <div>
               <div className="flex items-center gap-2.5">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={theme === "dark" ? "/logo-mark-dark.svg" : "/logo-mark.svg"}
+                  alt=""
+                  aria-hidden
+                  width={30}
+                  height={30}
+                  className="h-[30px] w-[30px] shrink-0"
+                />
                 <span className="font-display text-[22px] tracking-[0.34em] text-ink">SALIRA</span>
-                <span aria-hidden className="h-4 w-px bg-line-strong" />
-                <span aria-hidden className="pulse-dot h-1.5 w-1.5 rounded-full bg-gold" />
               </div>
               <p className="mt-5 max-w-xs text-[12.5px] leading-7 text-ink/50">{tr.footer_tagline}</p>
             </div>

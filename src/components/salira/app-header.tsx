@@ -14,7 +14,7 @@ export function AppHeader() {
   const view = useAppView((s) => s.view);
 
   const titleKey: Record<string, string> = {
-    home: tr.hero_kicker,
+    home: tr.nav_home,
     generator: tr.nav_generator,
     scanner: tr.nav_scanner,
     proxy: tr.nav_proxy,
@@ -33,9 +33,18 @@ export function AppHeader() {
         <div className="flex min-w-0 items-center gap-3">
           <button
             onClick={() => useAppView.getState().navigate("home")}
-            className="font-display shrink-0 text-[17px] tracking-[0.3em] text-ink transition-colors hover:text-goldsoft"
+            className="font-display flex shrink-0 items-center gap-2 text-[17px] tracking-[0.3em] text-ink transition-colors hover:text-goldsoft"
             aria-label="SALIRA home"
           >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={theme === "dark" ? "/logo-mark-dark.svg" : "/logo-mark.svg"}
+              alt=""
+              aria-hidden
+              width={21}
+              height={21}
+              className="h-[21px] w-[21px]"
+            />
             SALIRA
           </button>
           <span aria-hidden className="h-3.5 w-px bg-line-strong" />

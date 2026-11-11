@@ -548,7 +548,7 @@ export function AwgGenerator() {
         errorCorrectionLevel: "L",
         margin: 2,
         width: 520,
-        color: { dark: "#0a0908", light: "#ead7a9" },
+        color: { dark: "#0d1126", light: "#f2f4ff" },
       });
       setQrData(url);
       setQrOpen(true);

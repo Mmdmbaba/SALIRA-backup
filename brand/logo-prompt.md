@@ -1,9 +1,59 @@
-# پرامپت‌های ساخت لوگوی SALIRA
+# لوگوی SALIRA — وضعیت نهایی و پرامپت‌ها
 
-> این پرامپت‌ها را بدون تغییر در ابزار تصویرساز (Midjourney / DALL·E / Flux / ...) استفاده کنید.
-> سبک پیشنهادی ابزار: **Flat / Vector / Minimal**. مرجع نهایی همیشه `public/logo.svg` است.
+> **وضعیت: نهایی شد.** طرح پین‌ویل مثلثی توسط کاربر با ابزار تصویرساز تولید و تأیید شد
+> (2026-11-12) و به‌صورت پارامتریک وکتورسازی شد. مرجع رسمی: `brand/logo-master.svg` و `public/logo.svg`.
 
-## A — App Icon (مونوگرام تنها)
+## مشخصات فنی لوگوی نهایی
+
+| بخش | شرح |
+|---|---|
+| هسته | مثلث متساوی‌الأضلاع گردگوشه، پر بنفش `#8B54FF`، سوراخ منفی مثلثی در مرکز، خط دور سرمه‌ای `#273842`؛ مرکز هسته ~۱۷ واحد پایین‌تر از مرکز مدار |
+| هاله | ۳ مثلث خطی (بدون پرشدگی) سرمه‌ای، چرخش ۱۲۰° حول مرکز مدار + پیچ ۸° ساعتگرد (پین‌ویل)، شعاع مدار ~۲۰ واحد |
+| وردمارک | `SALIRA` — Space Grotesk 700 وکتورشده (بدون وابستگی به فونت)، tracking ≈ ۲٪، زیر مارک |
+| نسبت | عرض وردمارک ≈ عرض مارک؛ کل لاک‌آپ ≈ ۱:۱٫۳ |
+
+### فایل‌ها
+
+- `public/logo.svg` — لاک‌آپ برای پس‌زمینه‌ی روشن (خطوط سرمه‌ای)
+- `public/logo-dark.svg` — لاک‌آپ برای پس‌زمینه‌ی تیره (خطوط روشن `#E9EDFB`)
+- `public/logo-mark.svg` / `public/logo-mark-dark.svg` — فقط مارک (نوبار/فوتر)
+- `src/app/icon.svg` — favicon: مارک روی کاشی اوبسیدین `#0D1126`
+- `brand/logo-mono-white.svg` / `brand/logo-mono-navy.svg` — تک‌رنگ‌ها
+- `brand/logo-master.svg` — نسخه‌ی مادر
+- `scripts/build_logo.py` — مولد پارامتریک؛ هر تغییر هندسه/رنگ از همین فایل
+
+### نسخه‌بندی تصویرساز (برای تولید دوباره یا تنوع)
+
+```
+Minimal geometric logo mark for a privacy-tech brand. A solid rounded-corner
+equilateral triangle with a small triangular negative-space hole in its center,
+filled vivid violet (#8B54FF) with a thin dark-navy (#273842) outline, sitting
+slightly below center. Around it, three larger hollow triangle outlines in the
+same dark navy (#273842) rotate 120 degrees apart around the mark center,
+slightly twisted clockwise like a pinwheel, their edges passing behind the
+violet core. Flat vector style, crisp uniform strokes, off-white background
+(#FFFEF8), balanced asymmetric composition, modern tech aesthetic. Below the
+mark: the wordmark SALIRA in bold geometric sans-serif (Space Grotesk style),
+near-black. No tagline, no extra text, no shadows, no 3D, no gradients inside
+the triangles.
+```
+
+Negative prompt:
+
+```
+photorealistic, 3D render, bevel, emboss, heavy drop shadow, neon glow overload,
+rainbow gradient, extra text, tagline, watermark, busy background, chrome effect,
+gradient mesh, low contrast, distorted triangles, sketch lines
+```
+
+---
+
+## آرشیو — پرامپت‌های مرحله‌ی ایده‌پردازی (نسخه‌ی مونوگرام S، منسوخ)
+
+این پرامپت‌ها مونوگرام «S برش‌خورده» را می‌ساختند؛ ابزار تصویرساز به‌جای آن
+ترکیب مثلثی را تولید کرد که توسط کاربر انتخاب و نهایی شد. برای مستندسازی نگه داشته می‌شوند.
+
+### A — App Icon
 
 ```
 Minimal geometric app icon for a privacy-tech brand. A bold letter S monogram
@@ -19,7 +69,7 @@ contrast. No extra text, no letters other than the single S, no drop shadows,
 no 3D bevels, no photorealism.
 ```
 
-## B — Horizontal Lockup (مونوگرام + وردمارک)
+### B — Horizontal Lockup
 
 ```
 Horizontal logo lockup for a privacy-tech brand on a deep navy background
@@ -33,20 +83,3 @@ Flat vector branding style, crisp edges, balanced negative space, modern
 minimal SaaS aesthetic. No tagline, no words besides SALIRA, no extra icons,
 no shadows, no 3D effects.
 ```
-
-## Negative Prompt (اگر ابزار فیلد جدا دارد)
-
-```
-photorealistic, 3D render, bevel, emboss, heavy drop shadow, neon glow overload,
-rainbow gradient, extra text, tagline, watermark, busy background, chrome effect,
-gradient mesh, low contrast
-```
-
-## مشخصات خروجی و گام‌های بعد
-
-1. آیکون: مربع **۲۰۴۸×۲۰۴۸** (ترجیحاً با پس‌زمینه‌ی تخت؛ نسخه‌ی شفاف هم اگر پشتیبانی شد)
-2. لاک‌آپ: نسبت حدود **۳:۱ یا ۴:۱**
-3. چند خروجی بگیرید و نزدیک‌ترین به مرجع را انتخاب کنید
-4. نسخه‌ی نهایی را **وکتورسازی (trace)** کنید و در `brand/` ذخیره کنید + دو نسخه‌ی تک‌رنگ بسازید
-5. جایگزینی نهایی: `public/logo.svg`، `src/app/icon.svg` و بازتولید `public/og-image.png`
-   (`node scripts/make_og_image.js` پس از نصب وابستگی‌ها)
