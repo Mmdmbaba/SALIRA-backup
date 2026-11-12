@@ -1,0 +1,17 @@
+{
+  // SALIRA — Cloudflare Workers config (OpenNext adapter).
+  // Build first:  bash scripts/build-workers.sh   → produces .open-next/
+  // Deploy later: bash scripts/deploy-workers.sh  (needs CLOUDFLARE_API_TOKEN)
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "salira",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-01-15",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "observability": {
+    "enabled": true
+  }
+}

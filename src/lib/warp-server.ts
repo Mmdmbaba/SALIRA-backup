@@ -58,13 +58,29 @@ function derivePublicKey(privB64: string): string {
   return der.subarray(der.length - 32).toString("base64");
 }
 
-function generateX25519Keypair(): { privateKey: string; publicKey: string } {
-  const { publicKey, privateKey } = crypto.generateKeyPairSync("x25519");
-  const privRaw = privateKey.export({ type: "pkcs8", format: "der" }) as Buffer;
-  const pubRaw = publicKey.export({ type: "spki", format: "der" }) as Buffer;
+async function generateX25519Keypair(): Promise<{ privateKey: string; publicKey: string }> {
+  // WebCrypto X25519 — available on both Node (>=20) and Cloudflare Workers.
+  const pair = (await crypto.subtle.generateKey(
+    { name: "X25519" } as unknown as AlgorithmIdentifier,
+    true,
+    ["deriveKey", "deriveBits"]
+  )) as unknown as CryptoKeyPair;
+
+  const pubRaw = new Uint8Array(await crypto.subtle.exportKey("raw", pair.publicKey));
+
+  // pkcs8 DER = 16-byte header + 32-byte raw scalar; take the trailing 32 bytes
+  const privDer = new Uint8Array(await crypto.subtle.exportKey("pkcs8", pair.privateKey));
+  const privRaw = privDer.subarray(privDer.length - 32);
+
+  const toB64 = (bytes: Uint8Array) => {
+    let s = "";
+    for (const b of bytes) s += String.fromCharCode(b);
+    return btoa(s);
+  };
+
   return {
-    privateKey: privRaw.subarray(privRaw.length - 32).toString("base64"),
-    publicKey: pubRaw.subarray(pubRaw.length - 32).toString("base64"),
+    privateKey: toB64(privRaw),
+    publicKey: toB64(pubRaw),
   };
 }
 
@@ -112,7 +128,7 @@ async function registerDirect(opts: RegisterOptions): Promise<{ device: WarpDevi
   if (opts.publicKey) {
     publicKey = decodeBase64Key(opts.publicKey).toString("base64");
   } else {
-    const kp = generateX25519Keypair();
+    const kp = await generateX25519Keypair();
     privateKey = kp.privateKey;
     publicKey = kp.publicKey;
   }

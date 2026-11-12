@@ -1,15 +1,18 @@
 import type { NextConfig } from "next";
 
 /**
- * Two build modes:
- *  - default        → output: "standalone" (full server: API routes, Prisma, real scans)
- *  - EXPORT_STATIC=1 → output: "export" (static bundle for GitHub Pages / any static host)
- *                     API routes are removed by scripts/build-pages.sh before this build runs.
+ * Three build modes:
+ *  - default          → output: "standalone" (full Node server: real scans)
+ *  - EXPORT_STATIC=1  → output: "export" (static bundle for GitHub Pages);
+ *                       API routes are removed by scripts/build-pages.sh
+ *  - BUILD_WORKERS=1  → server build for Cloudflare Workers via
+ *                       @opennextjs/cloudflare (scripts/build-workers.sh);
+ *                       scan/stats variants are swapped in by the script
  *
- * For static hosting under a sub-path (e.g. https://<user>.github.io/salira/),
- * set NEXT_PUBLIC_BASE_PATH=/salira so both routing and asset URLs are correct.
+ * Static hosting under a sub-path (GitHub Pages) sets NEXT_PUBLIC_BASE_PATH.
  */
 const isExport = process.env.EXPORT_STATIC === "1";
+const isWorkers = process.env.BUILD_WORKERS === "1";
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
 const shared: NextConfig = {
@@ -27,9 +30,15 @@ const nextConfig: NextConfig = isExport
       trailingSlash: true,
       images: { unoptimized: true },
     }
-  : {
-      ...shared,
-      output: "standalone",
-    };
+  : isWorkers
+    ? {
+        ...shared,
+        // OpenNext bundles its own server entry — do not use standalone output.
+        images: { unoptimized: true },
+      }
+    : {
+        ...shared,
+        output: "standalone",
+      };
 
 export default nextConfig;

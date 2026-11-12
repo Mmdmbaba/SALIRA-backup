@@ -4,7 +4,9 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import { withBase } from "@/lib/paths";
 
 /** Static-export builds (GitHub Pages) have no server: skip server-only calls. */
-const STATIC_DEMO = process.env.NEXT_PUBLIC_STATIC_DEMO === "1";
+/** Server-side UDP handshake scan is only available on the Node standalone
+ *  build — static hosts AND Cloudflare Workers both finish with local results. */
+const SERVER_SCAN = process.env.NEXT_PUBLIC_SERVER_SCAN === "1";
 
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -384,8 +386,8 @@ export function IpScanner() {
         return;
       }
 
-      if (STATIC_DEMO) {
-        /* static build: no server handshake — local results are final */
+      if (!SERVER_SCAN) {
+        /* no server handshake available (static host or Workers) — local results are final */
         const bridge: ScannerEndpoint[] = [];
         for (const e of entries) {
           const l = localMap.get(e.ip);

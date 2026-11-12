@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { readFile } from "node:fs/promises";
-import path from "node:path";
-import { randomBytes } from "node:crypto";
+import { MTPROTO_APP_PY } from "@/lib/mtproto-app-template";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -121,9 +119,11 @@ TLS_DOMAIN = "${tlsDomain}"
 }
 
 async function appPy(): Promise<string> {
-  // the alexbers/mtprotoproxy core, already patched for modern Python (Task 1)
-  const p = path.join(process.cwd(), "mtproto", "app.py");
-  return readFile(p, "utf8");
+  // the alexbers/mtprotoproxy core, already patched for modern Python (Task 1).
+  // Embedded as a constant (generated from mtproto/app.py via
+  // scripts/gen-mtproto-template.py) so this route can run on Cloudflare
+  // Workers — node:fs is not available there.
+  return MTPROTO_APP_PY;
 }
 
 function linksFor(ip: string, port: number, secret: string, tlsDomain: string) {
@@ -227,7 +227,9 @@ export async function POST(req: NextRequest) {
         const alloc = detail.attributes?.relationships?.allocations?.data?.[0]?.attributes;
         if (!alloc?.ip || !alloc?.port) throw new ApiError("notfound", 404, "no allocation");
 
-        const secret = randomBytes(16).toString("hex");
+        // WebCrypto RNG — works on Node and Cloudflare Workers alike
+        const buf = crypto.getRandomValues(new Uint8Array(16));
+        const secret = Array.from(buf, (b) => b.toString(16).padStart(2, "0")).join("");
         const [core] = await Promise.all([appPy()]);
         const cfg = buildConfigPy(alloc.port, secret, tlsDomain);
         const write = (file: string, raw: string) =>

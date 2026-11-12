@@ -4,10 +4,10 @@
 
 ## وضعیت فعلی
 
-- آخرین به‌روزرسانی: 2026-11-12 (نشست استقرار GitHub Pages — سایت زنده شد)
-- انجام‌شده در آخرین مرحله: توکن کاربر مجوزهای جدید گرفت (Pages/Administration)؛ ریپوی SALIRA-backup عمومی شد (PATCH private:false)؛ Pages با منبع شاخه gh-pages فعال شد (201) و سایت در ~۳۰ ثانیه زنده شد: https://mmdmbaba.github.io/SALIRA-backup/ — راستی‌آزمایی کامل: عنوان فارسی، فونت‌ها، هر دو CSS (مسیر chunks/ در Next 16)، JS، logo-mark.svg، og-image.png همگی 200؛ مسیر ناموجود کد 404 می‌دهد
-- مرحله جاری: ✅ استقرار GitHub Pages کامل شد — سایت زنده و پایدار از شاخه gh-pages (بیلد بعدی فقط با دو اسکریپت build-pages.sh و deploy-pages.sh تکرار می‌شود)
-- گام بعدی: ۱) حذف دستی ریپوی خالی Mmdmbaba/salira (Settings→Danger Zone) ۲) توصیه امنیتی: چون mtproto/config.py (شامل secret پروکسی) حالا عمومی است، secret را روی سرور چرخش بده ۳) قابلیت‌های ۲-۴ نقشه راه (پنل دیپلوی VPS/Replit، Cloudflare، MTProto رایگان)
+- آخرین به‌روزرسانی: 2026-11-12 (نشست مهاجرت کامل به Cloudflare Workers — آماده و محلی تست‌شده)
+- انجام‌شده در آخرین مرحله: مهاجرت کامل طبق انتخاب کاربر (OpenNext 1.20 + Next 16). کشف مهم: Prisma و next-auth هیچ‌جا ایمپورت نشده‌اند → بدون D1، Worker سبک. تغییرات: next.config حالت سوم BUILD_WORKERS؛ kata route بدون node:fs (قالب app.py با scripts/gen-mtproto-template.py در src/lib/mtproto-app-template.ts تعبیه شد؛ randomBytes→getRandomValues)؛ warp-server: کلیدساز x25519 با WebCrypto (هم روی Node هم Workers)؛ stats نسخه Workers ساده‌شده شفاف (fetch به API ثبت‌نام WARP + چک edge یکسان + connect واقعی TCP به پروکسی از cloudflare:sockets که با new Function از دید باندلرها مخفی شد — Turbopack حتی join را fold می‌کرد!)؛ scan در بیلد Workers → shim 501؛ ip-scanner فلگ NEXT_PUBLIC_SERVER_SCAN گرفت (dev با .env=1 سرور واقعی)؛ scripts/build-workers.sh (swap/restore با trap) و deploy-workers.sh (توکن .credentials/cloudflare.token) و wrangler.jsonc (main: .open-next/worker.js، nodejs_compat، assets)
+- مرحله جاری: ✅ آمادهٔ دیپلوی — تست محلی با wrangler dev (بدون توکن CF): GET / کد 200 با عنوان فارسی، /api/stats با mode:workers و warp alive (55ms)، POST /api/warp ثبت‌نام واقعی WARP موفق با privateKey خالی (حالت حریم خصوصی)، /api/scan shim 501 شفاف، /api/proxy/kata زنجیرهٔ fetch به پنل katabump کامل (auth برای کلید ساختگی)، og-image و تم‌ها سالم. دو محدودیت ثبت‌شده: UDP (و بنابراین اسکنر سمت سرور) در Workers ممکن نیست (کاربر ساده‌سازی را انتخاب کرد)؛ connect() به IPهای خود Cloudflare طبق docs مسدود است (به همین دلیل ranges با چک edge یکسان سرو می‌شود + فیلد note)
+- گام بعدی: ۱) کاربر توکن Cloudflare با مجوز Workers Scripts: Edit بسازد و در .credentials/cloudflare.token بگذارد → bash scripts/deploy-workers.sh (URL از خروجی wrangler خوانده و پینگ می‌شود) ۲) راستی‌آزمایی URL زنده + تصمیم درباره نگه‌داشتن/حذف نسخه Pages ۳) حذف دستی ریپوی خالی Mmdmbaba/salira + چرخش secret پروکسی (از نشست قبل)
 
 ## لاگ
 
@@ -100,4 +100,9 @@
 - راستی‌آزمایی زنده: عنوان «SALIRA | مولد AmneziaWG و اسکنر IP»، فونت‌های woff2/ttf با basePath درست، دو CSS در _next/static/chunks/ (۲۰۰)، JS chunk (۲۰۰)، logo-mark.svg و og-image.png (۲۰۰)، مسیر ناموجود → کد 404 (404.html سرو می‌شود)
 - نکته امنیتی ثبت‌شده: mtproto/config.py حاوی secret پروکسی tg=24dec…beac حالا عمومی است → چرخش secret روی سرور توصیه می‌شود
 - باقی‌مانده: حذف دستی ریپوی خالی Mmdmbaba/salira (توکن اجازه DELETE ندارد)
+
+
+### 2026-11-12 10:24 UTC — مهاجرت کامل به Cloudflare Workers (OpenNext) — آماده‌سازی + تست محلی کامل
+
+- کشف: Prisma (schema بویلرپلیت User/Post) و next-auth صفر ایمپورت دارند → D1 لازم نشد؛ Worker فقط خود اپ است\n- گره اصلی بیلد: cloudflare:sockets را Turbopack (const-fold حتی Array.join!) و esbuild resolve می‌کردند → با new Function("s","return import(s)") کاملاً از دید باندلرها خارج شد و در workerd runtime حل می‌شود\n- بیلد: build-workers.sh روت‌های Node-only را قبل از opennextjs-cloudflare build با نسخه Workers عوض و با trap برمی‌گرداند؛ خروجی .open-next/worker.js (نه _worker.js)\- تست محلی workerd بدون توکن: صفحه 200 + فارسی، stats (mode:workers, warp alive 55ms)، ثبت‌نام واقعی WARP از داخل Worker با WebCrypto و privateKey خالی، scan→501، kata→پنل katabump جواب auth داد (زنجیره کامل)، og-image 200\n- محدودیت‌های سندباکس: TCP خام به 51.75.118.79 از sandbox مسدود (proxy alive:false محلی — روی CF واقعی درست سنجیده می‌شود)؛ HTTPS اوکی\n- امنیت: قالب app.py (85KB) از mtproto/app.py به src/lib/mtproto-app-template.ts تعبیه شد (اسکریپت جنریتور موجود است)
 
