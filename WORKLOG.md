@@ -4,10 +4,10 @@
 
 ## وضعیت فعلی
 
-- آخرین به‌روزرسانی: 2026-11-12 (نشست استقرار GitHub Pages روی ریپوی بکاپ)
-- انجام‌شده در آخرین مرحله: توکن جدید کاربر دریافت و راستی‌آزمایی شد (Mmdmbaba، پوش به SALIRA-backup تأیید)؛ اکسپورت استاتیک با basePath=/SALIRA-backup بیلد شد (canonical/og درست، 4.2MB) و کامل به شاخه gh-pages پوش شد (a1bdab8) بدون دست‌زدن main بکاپ؛ deploy-pages.sh تعمیم یافت (PUSH_BRANCH + WAIT_FOR_PUBLISH + URL lowercase)؛ .env از ایندکس گیت خارج شد (مقدارش فقط مسیر sqlite محلی — بی‌خطر)؛ ریپوی عمومی Mmdmbaba/salira که به‌اشتباه ساخته شد خالی است و حذفش با API ممکن نشد (403)
-- مرحله جاری: ⏳ فقط یک قدم مانده: فعال‌سازی Pages — توکن فعلی مجوز Pages ندارد (POST /pages → 403 «Resource not accessible by personal access token»)؛ راه‌ها: فعال‌سازی دستی از UI (Settings→Pages→Deploy from branch→gh-pages) یا افزودن مجوز Pages: Read and write به توکن؛ توجه: اگر پلن حساب Free باشد Pages روی ریپوی خصوصی فقط با Pro یا عمومی‌کردن ریپو ممکن است (اسکن تاریخچه انجام شد: هیچ توکنی در history نیست)
-- گام بعدی: ۱) فعال‌سازی Pages (کاربر از UI یا با مجوز جدید توکن) ۲) راستی‌آزمایی https://mmdmbaba.github.io/SALIRA-backup/ ۳) حذف دستی ریپوی خالی Mmdmbaba/salira از Settings→Danger Zone ۴) قابلیت‌های ۲-۴ نقشه راه
+- آخرین به‌روزرسانی: 2026-11-12 (نشست استقرار GitHub Pages — سایت زنده شد)
+- انجام‌شده در آخرین مرحله: توکن کاربر مجوزهای جدید گرفت (Pages/Administration)؛ ریپوی SALIRA-backup عمومی شد (PATCH private:false)؛ Pages با منبع شاخه gh-pages فعال شد (201) و سایت در ~۳۰ ثانیه زنده شد: https://mmdmbaba.github.io/SALIRA-backup/ — راستی‌آزمایی کامل: عنوان فارسی، فونت‌ها، هر دو CSS (مسیر chunks/ در Next 16)، JS، logo-mark.svg، og-image.png همگی 200؛ مسیر ناموجود کد 404 می‌دهد
+- مرحله جاری: ✅ استقرار GitHub Pages کامل شد — سایت زنده و پایدار از شاخه gh-pages (بیلد بعدی فقط با دو اسکریپت build-pages.sh و deploy-pages.sh تکرار می‌شود)
+- گام بعدی: ۱) حذف دستی ریپوی خالی Mmdmbaba/salira (Settings→Danger Zone) ۲) توصیه امنیتی: چون mtproto/config.py (شامل secret پروکسی) حالا عمومی است، secret را روی سرور چرخش بده ۳) قابلیت‌های ۲-۴ نقشه راه (پنل دیپلوی VPS/Replit، Cloudflare، MTProto رایگان)
 
 ## لاگ
 
@@ -89,4 +89,15 @@
 - پوش: out/ به شاخه gh-pages ریپوی بکاپ (sha a1bdab8)؛ main بکاپ همان feeae54 ماند؛ index.html (62KB) روی ریموت راستی‌آزمایی شد
 - scripts/deploy-pages.sh: PUSH_BRANCH (main پیش‌فرض / gh-pages برای ریپوی سورس‌دار) + WAIT_FOR_PUBLISH=0 + SITE_URL lowercase
 - امنیت: .env از ایندکس گیت خارج شد (git rm --cached؛ مقدار DATABASE_URL مسیر sqlite محلی و بی‌خطر)؛ اسکن کل history برای الگوی توکن: صفر مورد
+
+
+### 2026-11-12 08:41 UTC — عمومی‌سازی ریپو + فعال‌سازی Pages → سایت زنده
+
+- توکن کاربر به‌روزرسانی شد (مجوز Pages و Administration اضافه شد؛ مقدار توکن همان ماند و GET /user OK)
+- PATCH /repos {private:false} → 200: ریپوی SALIRA-backup عمومی شد
+- POST /pages با منبع {branch: gh-pages, path: /} → 201: Pages فعال شد
+- انتشار در ~۳۰ ثانیه: https://mmdmbaba.github.io/SALIRA-backup/ کد 200
+- راستی‌آزمایی زنده: عنوان «SALIRA | مولد AmneziaWG و اسکنر IP»، فونت‌های woff2/ttf با basePath درست، دو CSS در _next/static/chunks/ (۲۰۰)، JS chunk (۲۰۰)، logo-mark.svg و og-image.png (۲۰۰)، مسیر ناموجود → کد 404 (404.html سرو می‌شود)
+- نکته امنیتی ثبت‌شده: mtproto/config.py حاوی secret پروکسی tg=24dec…beac حالا عمومی است → چرخش secret روی سرور توصیه می‌شود
+- باقی‌مانده: حذف دستی ریپوی خالی Mmdmbaba/salira (توکن اجازه DELETE ندارد)
 
