@@ -1,0 +1,9 @@
+1:"$Sreact.fragment"
+2:I[47257,["/SALIRA-backup/_next/static/chunks/ff1a16fafef87110.js","/SALIRA-backup/_next/static/chunks/d2be314c3ece3fbe.js"],"ClientPageRoot"]
+3:I[52683,["/SALIRA-backup/_next/static/chunks/2d46f11719722bdc.js","/SALIRA-backup/_next/static/chunks/ae91035e7075715b.js","/SALIRA-backup/_next/static/chunks/2924318cd9683357.js","/SALIRA-backup/_next/static/chunks/8cc5912184196367.js"],"default"]
+6:I[97367,["/SALIRA-backup/_next/static/chunks/ff1a16fafef87110.js","/SALIRA-backup/_next/static/chunks/d2be314c3ece3fbe.js"],"OutletBoundary"]
+7:"$Sreact.suspense"
+0:{"buildId":"zUqk9RW_PsBLm3bAKBaCc","rsc":["$","$1","c",{"children":[["$","$L2",null,{"Component":"$3","serverProvidedParams":{"searchParams":{},"params":{},"promises":["$@4","$@5"]}}],[["$","script","script-0",{"src":"/SALIRA-backup/_next/static/chunks/2924318cd9683357.js","async":true}],["$","script","script-1",{"src":"/SALIRA-backup/_next/static/chunks/8cc5912184196367.js","async":true}]],["$","$L6",null,{"children":["$","$7",null,{"name":"Next.MetadataOutlet","children":"$@8"}]}]]}],"loading":null,"isPartial":false}
+4:{}
+5:"$0:rsc:props:children:0:props:serverProvidedParams:params"
+8:null

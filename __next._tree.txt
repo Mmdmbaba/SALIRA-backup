@@ -1,0 +1,11 @@
+:HL["/SALIRA-backup/_next/static/chunks/3330d4b9d94208c6.css","style"]
+:HL["/SALIRA-backup/_next/static/chunks/71ac739ebca82bc1.css","style"]
+:HL["/SALIRA-backup/_next/static/media/70bc3e132a0a741e-s.p.15008bfb.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/SALIRA-backup/_next/static/media/Harmattan_Bold-s.p.48956d93.ttf","font",{"crossOrigin":"","type":"font/ttf"}]
+:HL["/SALIRA-backup/_next/static/media/Harmattan_Medium-s.p.6e552a0e.ttf","font",{"crossOrigin":"","type":"font/ttf"}]
+:HL["/SALIRA-backup/_next/static/media/Harmattan_Regular-s.p.cf266d19.ttf","font",{"crossOrigin":"","type":"font/ttf"}]
+:HL["/SALIRA-backup/_next/static/media/Harmattan_SemiBold-s.p.ddf78627.ttf","font",{"crossOrigin":"","type":"font/ttf"}]
+:HL["/SALIRA-backup/_next/static/media/ec2f4458eb06f74e-s.p.69e2a7a7.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/SALIRA-backup/_next/static/media/ec8f59eafded4799-s.p.bd0c2d26.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/SALIRA-backup/_next/static/media/f1d25eabcf1db66d-s.p.c041a43b.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+0:{"buildId":"zUqk9RW_PsBLm3bAKBaCc","tree":{"name":"","paramType":null,"paramKey":"","hasRuntimePrefetch":false,"slots":{"children":{"name":"__PAGE__","paramType":null,"paramKey":"__PAGE__","hasRuntimePrefetch":false,"slots":null,"isRootLayout":false}},"isRootLayout":true},"staleTime":300}

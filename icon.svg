@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="SALIRA">
+  <rect width="120" height="120" rx="26" fill="#FFF8EE"/>
+  <g transform="translate(15.60 23.07) scale(0.8299) translate(-133.00 -70.00)">
+  <path d="M 147.00 132.00 L 139.00 152.00 L 182.00 153.00 L 193.00 124.00 L 159.00 109.00 L 172.00 76.00 L 233.00 76.00 L 226.00 99.00" fill="none" stroke="#3B3A38" stroke-width="3.37" stroke-linejoin="miter"/>
+  <path d="M 188.00 80.00 L 180.00 104.00 L 214.00 118.00 L 201.00 152.00 L 191.00 153.00 L 204.00 122.00 L 168.00 105.00 L 181.00 76.00" fill="none" stroke="#3B3A38" stroke-width="3.37" stroke-linejoin="miter"/>
+  </g>
+</svg>
