@@ -4,10 +4,10 @@
 
 ## وضعیت فعلی
 
-- آخرین به‌روزرسانی: 2026-11-12 (نشست آماده‌سازی GitHub Pages — export استاتیک)
-- انجام‌شده در آخرین مرحله: پروژه برای GitHub Pages آماده شد — next.config حالت EXPORT_STATIC گرفت، layout از کوکی سرور به اسکریپت boot تم محلی تبدیل شد (بدون FLUC)، هلپر withBase برای basePath ساخته و همه‌ی ارجاع‌های مطلق پچ شدند، گارد STATIC_DEMO برای WARP/اسکنر سرور گذاشته شد، sitemap فورس-استاتیک شد؛ بیلد استاتیک 4.2MB در out/ موفق و با مرورگر headless راستی‌آزمایی شد (دو تم، دو زبان، ناوبری hash، بدون خطای کنسول)
-- مرحله جاری: ⛔ توکن GitHub در بازیابی سندباکس از بین رفت (.credentials/ پاک شد) — push و ساخت ریپو Pages تا رسیدن توکن جدید متوقف است؛ همه‌ی تغییرات به‌صورت کامیت محلی ذخیره شده
-- گام بعدی: ۱) کاربر توکن جدید (دسترسی repo) بدهد → bash scripts/deploy-pages.sh (ساخت ریپوی عمومی salira + push + فعال‌سازی Pages + پینگ تا انتشار) ۲) سپس bash scripts/backup.sh برای همگام‌سازی بکاپ ۳) قابلیت‌های ۲-۴ نقشه راه
+- آخرین به‌روزرسانی: 2026-11-12 (نشست استقرار GitHub Pages روی ریپوی بکاپ)
+- انجام‌شده در آخرین مرحله: توکن جدید کاربر دریافت و راستی‌آزمایی شد (Mmdmbaba، پوش به SALIRA-backup تأیید)؛ اکسپورت استاتیک با basePath=/SALIRA-backup بیلد شد (canonical/og درست، 4.2MB) و کامل به شاخه gh-pages پوش شد (a1bdab8) بدون دست‌زدن main بکاپ؛ deploy-pages.sh تعمیم یافت (PUSH_BRANCH + WAIT_FOR_PUBLISH + URL lowercase)؛ .env از ایندکس گیت خارج شد (مقدارش فقط مسیر sqlite محلی — بی‌خطر)؛ ریپوی عمومی Mmdmbaba/salira که به‌اشتباه ساخته شد خالی است و حذفش با API ممکن نشد (403)
+- مرحله جاری: ⏳ فقط یک قدم مانده: فعال‌سازی Pages — توکن فعلی مجوز Pages ندارد (POST /pages → 403 «Resource not accessible by personal access token»)؛ راه‌ها: فعال‌سازی دستی از UI (Settings→Pages→Deploy from branch→gh-pages) یا افزودن مجوز Pages: Read and write به توکن؛ توجه: اگر پلن حساب Free باشد Pages روی ریپوی خصوصی فقط با Pro یا عمومی‌کردن ریپو ممکن است (اسکن تاریخچه انجام شد: هیچ توکنی در history نیست)
+- گام بعدی: ۱) فعال‌سازی Pages (کاربر از UI یا با مجوز جدید توکن) ۲) راستی‌آزمایی https://mmdmbaba.github.io/SALIRA-backup/ ۳) حذف دستی ریپوی خالی Mmdmbaba/salira از Settings→Danger Zone ۴) قابلیت‌های ۲-۴ نقشه راه
 
 ## لاگ
 
@@ -80,3 +80,13 @@
 - ساخت `PROTOCOL.md` — قرارداد کاری سه‌قانونه (بکاپ دائمی، لاگ دائمی، قابل ادامه بودن)
 - تکمیل `.gitignore` — توکن و اطلاعات حساس (`.credentials/`) هرگز وارد ریپو نمی‌شوند
 - توکن به‌صورت امن و خارج از گیت ذخیره شد؛ احراز هویت با credential helper انجام می‌شود
+
+### 2026-11-12 08:34 UTC — استقرار GitHub Pages روی ریپوی بکاپ (gh-pages) — فعال‌سازی در انتظار مجوز/پلن
+
+- اشتباه نشست: ریپوی عمومی Mmdmbaba/salira بدون اجازه ساخته شد (توکن اجازه ساخت ریپو داشت)؛ کاربر تذکر داد → درستش: استقرار از همان SALIRA-backup؛ حذف ریپوی اشتباه با API ممکن نشد (DELETE 403) و خالی است (409) — حذف دستی لازم است
+- سنجه‌های توکن: GET /user OK (Mmdmbaba)؛ push به SALIRA-backup OK (برنچ آزمایشی tmp-perm-test ساخت/حذف شد)؛ POST /pages 403 (مجوز Pages در fine-grained tick نخورده)؛ plan حساب از GET /user قابل خواندن نیست
+- بیلد دوم: OWNER=mmdmbaba REPO_SLUG=SALIRA-backup → basePath=/SALIRA-backup، canonical و og:image درست، بدون باقی‌مانده /salira/، out/ 4.2MB
+- پوش: out/ به شاخه gh-pages ریپوی بکاپ (sha a1bdab8)؛ main بکاپ همان feeae54 ماند؛ index.html (62KB) روی ریموت راستی‌آزمایی شد
+- scripts/deploy-pages.sh: PUSH_BRANCH (main پیش‌فرض / gh-pages برای ریپوی سورس‌دار) + WAIT_FOR_PUBLISH=0 + SITE_URL lowercase
+- امنیت: .env از ایندکس گیت خارج شد (git rm --cached؛ مقدار DATABASE_URL مسیر sqlite محلی و بی‌خطر)؛ اسکن کل history برای الگوی توکن: صفر مورد
+

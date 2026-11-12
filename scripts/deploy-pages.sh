@@ -9,8 +9,10 @@ cd "$(dirname "$0")/.."
 
 OWNER="${OWNER:-Mmdmbaba}"
 REPO="${REPO_SLUG:-salira}"
+PUSH_BRANCH="${PUSH_BRANCH:-main}"   # gh-pages وقتی ریپو مال بکاپ/سورس است تا main دست نخورد
+WAIT="${WAIT_FOR_PUBLISH:-1}"
 TOKEN_FILE=".credentials/github.token"
-SITE_URL="https://${OWNER}.github.io/${REPO}/"
+SITE_URL="https://${OWNER,,}.github.io/${REPO}/"
 
 if [ ! -f "$TOKEN_FILE" ]; then
   echo "❌ توکن یافت نشد: $TOKEN_FILE"
@@ -39,29 +41,33 @@ else
   echo "[deploy] ریپو از قبل موجود است ($HTTP)"
 fi
 
-# ── ۲) push خروجی به main ───────────────────────────────────────────────
-echo "[deploy] push محتوای out/ به شاخه main ..."
+# ── ۲) push خروجی به شاخه هدف ───────────────────────────────────────────
+echo "[deploy] push محتوای out/ به شاخه ${PUSH_BRANCH} ..."
 rm -rf out/.git
 cd out
-git init -q -b main
+git init -q -b "$PUSH_BRANCH"
 git add -A
 git -c user.name="Mmdmbaba" -c user.email="Mmdmbaba@users.noreply.github.com" \
   commit -qm "deploy: static build $(date -u '+%Y-%m-%d %H:%M UTC')"
 git remote add origin "https://x-access-token:${TOKEN}@github.com/${OWNER}/${REPO}.git"
-git push -q -f origin main
+git push -q -f origin "$PUSH_BRANCH"
 cd ..
 
 # ── ۳) فعال‌سازی Pages (build from branch) ──────────────────────────────
 echo "[deploy] فعال‌سازی GitHub Pages ..."
 HTTP=$(curl -s -o /tmp/pages.json -w '%{http_code}' "${AUTH[@]}" -X POST "$API/repos/$OWNER/$REPO/pages" \
-  -d '{"build_type":"legacy","source":{"branch":"main","path":"/"}}')
+  -d "{\"build_type\":\"legacy\",\"source\":{\"branch\":\"${PUSH_BRANCH}\",\"path\":\"/\"}}")
 case "$HTTP" in
   201|202) echo "[deploy] Pages فعال شد" ;;
   409)     echo "[deploy] Pages از قبل فعال است" ;;
   *) echo "⚠️  پاسخ Pages (HTTP $HTTP):"; cat /tmp/pages.json | head -8 ;;
 esac
 
-# ── ۴) انتظار برای انتشار ───────────────────────────────────────────────
+# ── ۴) انتظار برای انتشار (WAIT_FOR_PUBLISH=0 برای رد شدن) ─────────────
+if [ "$WAIT" = "0" ]; then
+  echo "[deploy] بررسی انتشار رد شد (WAIT_FOR_PUBLISH=0). آدرس: $SITE_URL"
+  exit 0
+fi
 echo "[deploy] بررسی انتشار در $SITE_URL ..."
 for i in $(seq 1 30); do
   sleep 10
